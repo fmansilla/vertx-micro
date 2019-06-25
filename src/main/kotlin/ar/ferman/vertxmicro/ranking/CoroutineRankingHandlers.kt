@@ -6,12 +6,8 @@ import io.vertx.ext.web.Route
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 import io.vertx.kotlin.coroutines.dispatcher
-import javafx.application.Application.launch
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 object CoroutineRankingHandlers {
 
@@ -34,19 +30,11 @@ object CoroutineRankingHandlers {
         context.response().endWithJson(userRankings.map { it.toJsonRepresentation() })
     }
 
-    private suspend fun handlePublishRanking(context: RoutingContext) {
-//        waitForPostData(context)
-delay(1000)
+    private fun handlePublishRanking(context: RoutingContext) {
         val userRanking = Json.decodeValue(context.body, UserRankingJson::class.java).toUserRanking()
         println("Published: $userRanking")
 
         context.response().setStatusCode(200).end()
-    }
-
-    private suspend fun waitForPostData(context: RoutingContext) : Unit = suspendCoroutine{ continuation ->
-        context.addBodyEndHandler {
-            continuation.resume(Unit)
-        }
     }
 
     /**
