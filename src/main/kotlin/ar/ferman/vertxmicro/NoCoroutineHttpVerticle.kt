@@ -1,13 +1,13 @@
 package ar.ferman.vertxmicro
 
-import ar.ferman.vertxmicro.ranking.RankingHandlers
+import ar.ferman.vertxmicro.ranking.restold.RankingHandlers
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
 
 @Suppress("unused")
-class MainVerticle : AbstractVerticle() {
+class NoCoroutineHttpVerticle : AbstractVerticle() {
 
     override fun start(startFuture: Future<Void>) {
         val router = createRouter()

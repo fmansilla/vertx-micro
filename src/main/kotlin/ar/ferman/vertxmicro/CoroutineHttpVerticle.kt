@@ -1,12 +1,12 @@
 package ar.ferman.vertxmicro
 
-import ar.ferman.vertxmicro.ranking.CoroutineRankingHandlers
+import ar.ferman.vertxmicro.ranking.rest.RankingResources
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
 import io.vertx.kotlin.core.http.listenAwait
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 
-class AppVerticle : CoroutineVerticle() {
+class CoroutineHttpVerticle : CoroutineVerticle() {
 
     override suspend fun start() {
         // Build Vert.x Web router
@@ -19,11 +19,10 @@ class AppVerticle : CoroutineVerticle() {
     }
 
     private fun createRouter() = Router.router(vertx).apply {
-
         route().handler(BodyHandler.create())
+        val coroutineScope = this@CoroutineHttpVerticle
 
-        val coroutineScope = this@AppVerticle
 
-        CoroutineRankingHandlers.registerOn(this, coroutineScope)
+        RankingResources.registerOn(this, coroutineScope)
     }
 }

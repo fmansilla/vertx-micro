@@ -1,8 +1,8 @@
-package ar.ferman.vertxmicro.ranking
+package ar.ferman.vertxmicro.ranking.domain
 
 interface UserRankingRepository {
 
-    fun find(userId: String) : UserRanking?
+    fun find(userId: String): UserRanking?
 
     fun findAll(): List<UserRanking>
 

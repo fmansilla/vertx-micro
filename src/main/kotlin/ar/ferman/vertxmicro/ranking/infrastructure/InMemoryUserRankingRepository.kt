@@ -1,4 +1,7 @@
-package ar.ferman.vertxmicro.ranking
+package ar.ferman.vertxmicro.ranking.infrastructure
+
+import ar.ferman.vertxmicro.ranking.domain.UserRankingRepository
+import ar.ferman.vertxmicro.ranking.domain.UserRanking
 
 class InMemoryUserRankingRepository : UserRankingRepository {
     private val data = mutableMapOf<String, UserRanking>()

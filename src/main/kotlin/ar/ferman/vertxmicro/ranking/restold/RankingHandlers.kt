@@ -1,13 +1,15 @@
-package ar.ferman.vertxmicro.ranking
+package ar.ferman.vertxmicro.ranking.restold
 
+import ar.ferman.vertxmicro.ranking.domain.UserRanking
+import ar.ferman.vertxmicro.ranking.rest.UserRankingJson
+import ar.ferman.vertxmicro.ranking.rest.endWithJson
+import ar.ferman.vertxmicro.ranking.rest.toJsonRepresentation
 import io.vertx.core.Handler
-import io.vertx.core.http.HttpServerResponse
 import io.vertx.core.json.Json
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 
 object RankingHandlers {
-
 
 
     fun registerOn(router: Router) {
@@ -39,9 +41,3 @@ object RankingHandlers {
     }
 }
 
-/**
- * Extension to the HTTP response to output JSON objects.
- */
-private fun HttpServerResponse.endWithJson(obj: Any) {
-    this.putHeader("Content-Type", "application/json; charset=utf-8").end(Json.encodePrettily(obj))
-}

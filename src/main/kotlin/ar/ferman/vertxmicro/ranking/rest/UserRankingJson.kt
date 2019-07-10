@@ -1,5 +1,6 @@
-package ar.ferman.vertxmicro.ranking
+package ar.ferman.vertxmicro.ranking.rest
 
+import ar.ferman.vertxmicro.ranking.domain.UserRanking
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 

@@ -18,7 +18,8 @@ object Versions {
 
 object App {
     const val launcherClassName = "io.vertx.core.Launcher"
-    const  val mainVerticleName = "ar.ferman.micro.MainVerticle"
+    const  val mainVerticleName = "ar.ferman.vertxmicro.CoroutineHttpVerticle"
+//    const  val mainVerticleName = "ar.ferman.vertxmicro.NoCoroutineHttpVerticle"
 }
 
 application {
@@ -35,11 +36,11 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8", Versions.KOTLIN))
+    implementation(kotlin("reflect", Versions.KOTLIN))
 
-    implementation("io.vertx:vertx-core:${Versions.VERTX}")
-    implementation("io.vertx:vertx-web:${Versions.VERTX}")
-    implementation("io.vertx:vertx-lang-kotlin:${Versions.VERTX}")
-    implementation("io.vertx:vertx-lang-kotlin-coroutines:${Versions.VERTX}")
+    vertxDependencies()
+
+    loggingDependencies()
 }
 
 val compileKotlin by tasks.getting(KotlinCompile::class) {
@@ -94,4 +95,20 @@ val shadowJar by tasks.getting(ShadowJar::class) {
     mergeServiceFiles {
         include("META-INF/services/io.vertx.core.spi.VerticleFactory")
     }
+}
+
+fun DependencyHandlerScope.vertxDependencies() {
+    implementation("io.vertx:vertx-core:${Versions.VERTX}")
+    implementation("io.vertx:vertx-web:${Versions.VERTX}")
+    implementation("io.vertx:vertx-lang-kotlin:${Versions.VERTX}")
+    implementation("io.vertx:vertx-lang-kotlin-coroutines:${Versions.VERTX}")
+}
+
+fun DependencyHandlerScope.loggingDependencies() {
+    implementation("org.slf4j:slf4j-api:1.7.26")
+//    implementation("ch.qos.logback:logback-classic:1.1.3")
+
+    implementation("org.apache.logging.log4j:log4j-api:2.12.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.12.0")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.12.0")
 }
