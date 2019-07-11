@@ -21,11 +21,11 @@
     <Loggers>
         <Logger name="ar.ferman" level="info" additivity="true">
             <AppenderRef ref="LogFile" />
-        </Logger>}
+        </Logger>
 
         <Logger name="io.netty" level="warn" additivity="true">
             <AppenderRef ref="LogFile" />
-        </Logger>}
+        </Logger>
 
         <Root level="debug">
             <AppenderRef ref="Console"/>
