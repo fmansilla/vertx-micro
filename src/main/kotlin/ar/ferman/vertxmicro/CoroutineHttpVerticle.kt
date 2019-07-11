@@ -1,6 +1,7 @@
 package ar.ferman.vertxmicro
 
 import ar.ferman.vertxmicro.ranking.rest.RankingResources
+import ar.ferman.vertxmicro.utils.Environment
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
 import io.vertx.kotlin.core.http.listenAwait
@@ -15,7 +16,7 @@ class CoroutineHttpVerticle : CoroutineVerticle() {
         // Start the server
         vertx.createHttpServer()
             .requestHandler(router)
-            .listenAwait(config.getInteger("http.port", 8080))
+            .listenAwait(Environment["HTTP_PORT"]?.toInt() ?: 8080)
     }
 
     private fun createRouter() = Router.router(vertx).apply {

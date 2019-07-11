@@ -27,7 +27,7 @@ class DynamoDbUserRankingRepositoryTest {
         @Container
         @JvmField
         val dynamoDb: KGenericContainer =
-            KGenericContainer("amazon/dynamodb-local:1.11.119").withExposedPorts(DYNAMO_PORT)
+            KGenericContainer("amazon/dynamodb-local:1.11.477").withExposedPorts(DYNAMO_PORT)
     }
 
     @Test
