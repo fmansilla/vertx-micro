@@ -14,7 +14,7 @@ class DefaultPublishScore(private val userRankingRepository: UserRankingReposito
         }
     }
 
-    private fun shouldPutUserRanking(userId: String, score: Int): Boolean {
+    private suspend fun shouldPutUserRanking(userId: String, score: Int): Boolean {
         return userRankingRepository.find(userId)?.let { current -> score > current.score } != false
     }
 }

@@ -1,7 +1,6 @@
-package ar.ferman.vertxmicro.ranking
+package ar.ferman.vertxmicro.ranking.rest
 
 import ar.ferman.vertxmicro.CoroutineHttpVerticle
-import ar.ferman.vertxmicro.ranking.rest.UserRankingJson
 import ar.ferman.vertxmicro.utils.TestVertxSupport
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -14,7 +13,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.Test
 
-class RankingHandlersTest : TestVertxSupport({ CoroutineHttpVerticle() }) {
+class RankingResourcesTest : TestVertxSupport({ CoroutineHttpVerticle() }) {
 
     @Test
     fun `find all user rankings`() = coroutineTest {
@@ -44,16 +43,18 @@ class RankingHandlersTest : TestVertxSupport({ CoroutineHttpVerticle() }) {
     }
 
     @Test
-    fun `put user ranking`() = coroutineTest {
+    fun `post user ranking`() = coroutineTest {
         val httpClient = createHttpClient()
         val userId = "ferman"
 
-        val httpResponse = httpClient.post("/rankings/$userId", Json.encode(
-            UserRankingJson(
-                userId,
-                5
+        val httpResponse = httpClient.post(
+            "/rankings", Json.encode(
+                UserRankingJson(
+                    userId,
+                    5
+                )
             )
-        ))
+        )
 
         then(httpResponse.statusCode()).isEqualTo(200)
     }

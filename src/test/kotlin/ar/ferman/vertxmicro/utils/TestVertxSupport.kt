@@ -6,9 +6,9 @@ import io.vertx.core.buffer.Buffer
 import io.vertx.ext.web.client.HttpResponse
 import io.vertx.ext.web.client.WebClient
 import io.vertx.ext.web.client.WebClientOptions
+import io.vertx.kotlin.core.closeAwait
 import io.vertx.kotlin.core.deployVerticleAwait
-import io.vertx.kotlin.ext.web.client.sendBufferAwait
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -30,7 +30,7 @@ open class TestVertxSupport(private val verticleSupplier: () -> Verticle) {
     @AfterEach
     fun stopVertx() {
         runBlocking {
-            vertx?.close()
+            vertx?.closeAwait()
             vertx = null
         }
     }
@@ -71,32 +71,19 @@ open class TestVertxSupport(private val verticleSupplier: () -> Verticle) {
                 defaultHost = host
             })
 
-
-             try {
-                    client.post(path).sendBuffer(Buffer.buffer(data)) {ar ->
-                        client.close()
-                        if (ar.succeeded()) {
+            try {
+                client.post(path).sendBuffer(Buffer.buffer(data)) { ar ->
+                    client.close()
+                    if (ar.succeeded()) {
                         continuation.resume(ar.result())
                     } else {
                         continuation.resumeWithException(Assertions.fail("HTTP Client Failure: ${ar.cause()}"))
 
                     }
-                    }
-            }catch (e: Throwable){
+                }
+            } catch (e: Throwable) {
                 throw e
-            }finally {
-//                client.close()
             }
-
-
-//                post(path).sendBuffer(Buffer.buffer(data)) { ar ->
-//                    if (ar.succeeded()) {
-//                        continuation.resume(ar.result())
-//                    } else {
-//                        continuation.resumeWithException(Assertions.fail("HTTP Client Failure: ${ar.cause()}"))
-//                    }
-//                }
-//            }
         }
 
         suspend fun put(path: String, data: String): HttpResponse<Buffer> = suspendCoroutine { continuation ->
