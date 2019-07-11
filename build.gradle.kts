@@ -61,8 +61,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT}")
 
     //Pending https://www.testcontainers.org/test_framework_integration/junit_5/
+//https://www.testcontainers.org/test_framework_integration/manual_lifecycle_control/#singleton-containers
     testImplementation("org.testcontainers:testcontainers:1.11.3")
-
+    testImplementation("org.testcontainers:junit-jupiter:1.11.3")
     //https://niels.nu/blog/2018/spring-dynamodb-integration-testing.html
     //https://www.testcontainers.org/modules/databases/dynalite/
 //    testImplementation("org.testcontainers:dynalite:1.11.3")

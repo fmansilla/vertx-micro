@@ -3,9 +3,10 @@ package ar.ferman.vertxmicro.ranking.infrastructure
 import ar.ferman.vertxmicro.ranking.domain.UserRanking
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.ClassRule
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
@@ -17,14 +18,16 @@ import kotlin.coroutines.suspendCoroutine
 //Workaround for Kotlin type inference issue
 class KGenericContainer(imageName: String) : GenericContainer<KGenericContainer>(imageName)
 
+@Testcontainers
 class DynamoDbUserRankingRepositoryTest {
 
     companion object {
         private const val DYNAMO_PORT = 8000
 
-        @ClassRule
+        @Container
         @JvmField
-        val dynamoDb: KGenericContainer = KGenericContainer("amazon/dynamodb-local:1.11.119").withExposedPorts(DYNAMO_PORT)
+        val dynamoDb: KGenericContainer =
+            KGenericContainer("amazon/dynamodb-local:1.11.119").withExposedPorts(DYNAMO_PORT)
     }
 
     @Test
