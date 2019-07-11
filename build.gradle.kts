@@ -60,6 +60,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT}")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT}")
 
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
+
     //Pending https://www.testcontainers.org/test_framework_integration/junit_5/
 //https://www.testcontainers.org/test_framework_integration/manual_lifecycle_control/#singleton-containers
     testImplementation("org.testcontainers:testcontainers:1.11.3")
