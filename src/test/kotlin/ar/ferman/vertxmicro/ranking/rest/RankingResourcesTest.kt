@@ -5,7 +5,6 @@ import ar.ferman.vertxmicro.utils.TestVertxSupport
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vertx.core.buffer.Buffer
-import io.vertx.core.json.Json
 import io.vertx.ext.web.client.HttpResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
@@ -28,35 +27,6 @@ class RankingResourcesTest : TestVertxSupport({ CoroutineHttpVerticle() }) {
                 5
             )
         )
-    }
-
-    @Test
-    fun `find user ranking`() = coroutineTest {
-        val httpClient = createHttpClient()
-        val userId = "ferman"
-
-        val httpResponse = httpClient.get("/rankings/$userId")
-
-        then(httpResponse.bodyAsJson(UserRankingJson::class.java)).satisfies {
-            it isEqualTo UserRankingJson(userId, 5)
-        }
-    }
-
-    @Test
-    fun `post user ranking`() = coroutineTest {
-        val httpClient = createHttpClient()
-        val userId = "ferman"
-
-        val httpResponse = httpClient.post(
-            "/rankings", Json.encode(
-                UserRankingJson(
-                    userId,
-                    5
-                )
-            )
-        )
-
-        then(httpResponse.statusCode()).isEqualTo(200)
     }
 
     private inline fun <reified T> readJsonBody(httpResponse: HttpResponse<Buffer>): T {
