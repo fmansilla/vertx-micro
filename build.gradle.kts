@@ -1,7 +1,7 @@
 @file:Suppress("PropertyName")
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
 plugins {
@@ -12,13 +12,14 @@ plugins {
 
 object Versions {
     const val KOTLIN = "1.3.21"
+    const val KOTLIN_COROUTINE = "1.3.0-RC"
     const val VERTX = "3.7.1"
     const val JUNIT = "5.4.2"
 }
 
 object App {
     const val launcherClassName = "io.vertx.core.Launcher"
-    const  val mainVerticleName = "ar.ferman.vertxmicro.CoroutineHttpVerticle"
+    const val mainVerticleName = "ar.ferman.vertxmicro.CoroutineHttpVerticle"
 //    const  val mainVerticleName = "ar.ferman.vertxmicro.NoCoroutineHttpVerticle"
 }
 
@@ -26,17 +27,19 @@ application {
     mainClassName = App.launcherClassName
 }
 
-repositories {
-    jcenter()
-    mavenCentral()
-    maven {
-        url = URI.create("https://oss.sonatype.org/content/repositories/iovertx-3717/")
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url = URI.create("https://oss.sonatype.org/content/repositories/iovertx-3717/") }
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8", Versions.KOTLIN))
     implementation(kotlin("reflect", Versions.KOTLIN))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.KOTLIN_COROUTINE}")
 
     vertxDependencies()
 
@@ -44,6 +47,7 @@ dependencies {
 
 //    implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.589")
     implementation("software.amazon.awssdk:dynamodb:2.7.2")
+    implementation("com.github.fmansilla:dynamodb-kotlin:master-SNAPSHOT")
 }
 
 val compileKotlin by tasks.getting(KotlinCompile::class) {
@@ -62,15 +66,11 @@ dependencies {
 
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
 
-    //Pending https://www.testcontainers.org/test_framework_integration/junit_5/
-//https://www.testcontainers.org/test_framework_integration/manual_lifecycle_control/#singleton-containers
+    //https://www.testcontainers.org/test_framework_integration/junit_5/
+    //https://www.testcontainers.org/test_framework_integration/manual_lifecycle_control/#singleton-containers
     testImplementation("org.testcontainers:testcontainers:1.11.3")
     testImplementation("org.testcontainers:junit-jupiter:1.11.3")
-    //https://niels.nu/blog/2018/spring-dynamodb-integration-testing.html
-    //https://www.testcontainers.org/modules/databases/dynalite/
-//    testImplementation("org.testcontainers:dynalite:1.11.3")
-
-    //testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.0-M1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.KOTLIN_COROUTINE}")
 }
 
 val compileTestKotlin by tasks.getting(KotlinCompile::class) {
