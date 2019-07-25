@@ -60,6 +60,8 @@ tasks.withType<KotlinCompile> {
 
 dependencies {
     testImplementation("io.vertx:vertx-web-client:${Versions.VERTX}")
+    testImplementation("io.vertx:vertx-junit5:${Versions.VERTX}")
+
     testImplementation("org.assertj:assertj-core:3.11.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT}")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT}")
