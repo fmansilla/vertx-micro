@@ -48,6 +48,8 @@ dependencies {
 //    implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.589")
     implementation("software.amazon.awssdk:dynamodb:2.7.2")
     implementation("com.github.fmansilla:dynamodb-kotlin:master-SNAPSHOT")
+
+    implementation("redis.clients:jedis:3.1.0")
 }
 
 val compileKotlin by tasks.getting(KotlinCompile::class) {

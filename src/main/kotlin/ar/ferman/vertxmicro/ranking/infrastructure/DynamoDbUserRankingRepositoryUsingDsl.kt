@@ -1,7 +1,9 @@
 package ar.ferman.vertxmicro.ranking.infrastructure
 
+import ar.ferman.dynamodb.dsl.AttributeType
 import ar.ferman.dynamodb.dsl.ItemMapper
 import ar.ferman.dynamodb.dsl.TableDefinition
+import ar.ferman.dynamodb.dsl.TableKeyAttribute
 import ar.ferman.dynamodb.dsl.async.Table
 import ar.ferman.vertxmicro.ranking.domain.UserRanking
 import ar.ferman.vertxmicro.ranking.domain.UserRankingRepository
@@ -14,8 +16,8 @@ class DynamoDbUserRankingRepositoryUsingDsl(dynamoDbClient: DynamoDbAsyncClient)
     private val table = Table(
         dynamoDbClient,
         TableDefinition(
-            UserRankingTable.TableName,
-            UserRankingTable.UserId
+            name = UserRankingTable.TableName,
+            hashKey = TableKeyAttribute(UserRankingTable.UserId, AttributeType.STRING)
         )
     )
 
