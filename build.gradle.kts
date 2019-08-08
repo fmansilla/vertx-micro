@@ -50,6 +50,8 @@ dependencies {
     implementation("com.github.fmansilla:dynamodb-kotlin:master-SNAPSHOT")
 
     implementation("redis.clients:jedis:3.1.0")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
 }
 
 val compileKotlin by tasks.getting(KotlinCompile::class) {
