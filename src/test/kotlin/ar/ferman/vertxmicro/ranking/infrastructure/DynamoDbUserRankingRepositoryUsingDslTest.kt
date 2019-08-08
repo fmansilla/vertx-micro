@@ -18,21 +18,15 @@ import kotlin.coroutines.suspendCoroutine
 class DynamoDbUserRankingRepositoryUsingDslTest {
 
     companion object {
-        private const val DYNAMO_PORT = 8000
-
         @Container
         @JvmField
-        val dynamoDb: KGenericContainer =
-            KGenericContainer("amazon/dynamodb-local:1.11.477").withExposedPorts(DYNAMO_PORT)
+        val dynamoDbContainer: KGenericContainer = DynamoDbForTests.createContainer()
     }
 
     @Test
     fun someTestMethod() = runBlocking {
 
-        val dynamoDbClient = DynamoDbAsyncClient.builder()
-            .region(Region.US_EAST_1)
-            .endpointOverride(URI("http://localhost:$DYNAMO_PORT"))
-            .credentialsProvider { AwsBasicCredentials.create("access", "secret") }.build()
+        val dynamoDbClient = DynamoDbForTests.createAsyncClient(dynamoDbContainer)
 
         dynamoDbClient.deleteUserRankingTable()
         dynamoDbClient.createUserRankingTable()
