@@ -1,6 +1,11 @@
 //package ar.ferman.vertxmicro.ranking.rest
 //
 //import ar.ferman.vertxmicro.CoroutineHttpVerticle
+//import ar.ferman.vertxmicro.ranking.infrastructure.DynamoDbForTests
+//import ar.ferman.vertxmicro.ranking.infrastructure.KGenericContainer
+//import ar.ferman.vertxmicro.ranking.infrastructure.TopRankingTable
+//import ar.ferman.vertxmicro.ranking.infrastructure.create
+//import ar.ferman.vertxmicro.utils.Environment
 //import ar.ferman.vertxmicro.utils.HttpTestUtils
 //import com.fasterxml.jackson.core.type.TypeReference
 //import com.fasterxml.jackson.databind.ObjectMapper
@@ -16,12 +21,30 @@
 //import kotlinx.coroutines.runBlocking
 //import org.assertj.core.api.Assertions.assertThat
 //import org.assertj.core.api.BDDAssertions.then
+//import org.junit.jupiter.api.BeforeEach
 //import org.junit.jupiter.api.Test
 //import org.junit.jupiter.api.extension.ExtendWith
+//import org.testcontainers.junit.jupiter.Container
+//import org.testcontainers.junit.jupiter.Testcontainers
 //
-//
+//@Testcontainers
 //@ExtendWith(VertxExtension::class)
 //class RankingResourcesTest2 {
+//    companion object {
+//        @Container
+//        @JvmField
+//        val dynamoDbContainer: KGenericContainer = DynamoDbForTests.createContainer()
+//
+//    }
+//
+//    @BeforeEach
+//    fun initVertx() {
+//        Environment["DYNAMO_DB_HOST"] = "http://${dynamoDbContainer.containerIpAddress}:${dynamoDbContainer.getMappedPort(DynamoDbForTests.DYNAMO_PORT)}"
+//        with(DynamoDbForTests.createSyncClient(dynamoDbContainer)) {
+//            runCatching { TopRankingTable.create(this) }
+//            close()
+//        }
+//    }
 //
 //    @Test
 //    fun `find all user rankings`(vertx: Vertx, testContext: VertxTestContext) = coroutineTest(vertx, testContext) {
@@ -29,7 +52,16 @@
 //            val userId = "ferman"
 //            val httpClient = createHttpClient()
 //
-//            val httpResponse = httpClient.get("/rankings")
+//            val httpResponsepost = httpClient.post(
+//                "/rankings", Json.encode(
+//                    UserRankingJson(
+//                        userId,
+//                        5
+//                    )
+//                )
+//            )
+//
+//            val httpResponse = httpClient.get("/top-rankings")
 //
 //            then(readJsonBody<List<UserRankingJson>>(httpResponse)).containsExactly(
 //                UserRankingJson(
@@ -45,6 +77,15 @@
 //        with(HttpTestUtils(vertx)) {
 //            val httpClient = createHttpClient()
 //            val userId = "ferman"
+//            val httpResponsepost = httpClient.post(
+//                "/rankings", Json.encode(
+//                    UserRankingJson(
+//                        userId,
+//                        5
+//                    )
+//                )
+//            )
+//
 //
 //            val httpResponse = httpClient.get("/rankings/$userId")
 //

@@ -4,9 +4,7 @@ import ar.ferman.vertxmicro.ranking.domain.UserRanking
 import ar.ferman.vertxmicro.ranking.domain.UserRankingRepository
 
 class InMemoryUserRankingRepository : UserRankingRepository {
-    private val data = mutableMapOf<String, UserRanking>().also {
-        it["ferman"] = UserRanking("ferman", 5)
-    }
+    private val data = mutableMapOf<String, UserRanking>()
 
     override suspend fun find(userId: String): UserRanking? = data[userId]
 

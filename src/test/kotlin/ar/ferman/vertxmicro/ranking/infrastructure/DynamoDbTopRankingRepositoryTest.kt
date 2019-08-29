@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
-import software.amazon.awssdk.services.dynamodb.model.*
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 
 @Testcontainers
 class DynamoDbTopRankingRepositoryTest {
@@ -25,8 +25,8 @@ class DynamoDbTopRankingRepositoryTest {
     @BeforeEach
     fun setUp() {
         client = DynamoDbForTests.createSyncClient(dynamoDbContainer)
-        deleteTableIfExists()
-        createTable()
+        TopRankingTable.deleteIfExists(client)
+        TopRankingTable.create(client)
     }
 
     @Test
@@ -73,33 +73,6 @@ class DynamoDbTopRankingRepositoryTest {
 
     private fun sampleTopRanking(): String {
         return mapper.writeValueAsString(listOf(UserRankingJson("someone", 1)))
-    }
-
-    private fun createTable() {
-        client.createTable { tableBuilder ->
-            with(tableBuilder) {
-                tableName(TopRankingTable.NAME)
-                keySchema(
-                    KeySchemaElement.builder()
-                        .attributeName(TopRankingTable.HASHKEY).keyType(KeyType.HASH)
-                        .build()
-                )
-                attributeDefinitions(
-                    AttributeDefinition.builder()
-                        .attributeName(TopRankingTable.HASHKEY).attributeType(ScalarAttributeType.S)
-                        .build()
-                )
-                billingMode(BillingMode.PAY_PER_REQUEST)
-            }
-        }
-    }
-
-    private fun deleteTableIfExists() {
-        try {
-            client.deleteTable { it.tableName(TopRankingTable.NAME) }
-        } catch (e: ResourceNotFoundException) {
-            //Ignoring non existent table
-        }
     }
 
     private fun String.toAttributeValue() = AttributeValue.builder().s(this).build()

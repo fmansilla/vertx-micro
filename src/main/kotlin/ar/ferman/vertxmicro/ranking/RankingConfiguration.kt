@@ -7,6 +7,7 @@ import ar.ferman.vertxmicro.ranking.domain.TopRankingRepository
 import ar.ferman.vertxmicro.ranking.domain.UserRankingRepository
 import ar.ferman.vertxmicro.ranking.infrastructure.DynamoDbTopRankingRepository
 import ar.ferman.vertxmicro.ranking.infrastructure.InMemoryUserRankingRepository
+import ar.ferman.vertxmicro.utils.Environment
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
@@ -17,7 +18,7 @@ object RankingConfiguration {
     private val dynamoDbClient: DynamoDbClient by lazy {
         DynamoDbClient.builder()
             .region(Region.US_EAST_1)
-            .endpointOverride(URI("http://localhost:8080"))
+            .endpointOverride(URI(Environment["DYNAMO_DB_HOST"] ?: "http://localhost:8000"))
             .credentialsProvider { AwsBasicCredentials.create("access", "secret") }.build()
     }
     private val userRankingRepository: UserRankingRepository by lazy { InMemoryUserRankingRepository() }

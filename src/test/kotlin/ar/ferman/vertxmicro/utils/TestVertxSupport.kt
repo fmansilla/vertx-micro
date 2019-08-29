@@ -20,7 +20,7 @@ open class TestVertxSupport(private val verticleSupplier: () -> Verticle) {
     private var vertx: Vertx? = null
 
     @BeforeEach
-    fun initVertx() {
+    open fun initVertx() {
         runBlocking {
             vertx = Vertx.vertx()
             vertx!!.deployVerticleAwait(verticleSupplier.invoke())
@@ -28,7 +28,7 @@ open class TestVertxSupport(private val verticleSupplier: () -> Verticle) {
     }
 
     @AfterEach
-    fun stopVertx() {
+    open fun stopVertx() {
         runBlocking {
             vertx?.closeAwait()
             vertx = null
