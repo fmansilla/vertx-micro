@@ -51,29 +51,9 @@ class SyncDynamoDbTopRankingRepositoryTest {
     fun `put ranking into top rankings`() {
         val repository = SyncDynamoDbTopRankingRepository(client)
 
-        repository.put(UserRanking("ferman", 10))
+        repository.put(listOf(UserRanking("ferman", 10)))
 
         then(repository.get()).containsExactly(UserRanking("ferman", 10))
-    }
-
-    @Test
-    fun `check if new top high score should be in top user rankings`() {
-        val repository = SyncDynamoDbTopRankingRepository(client)
-        repository.put(UserRanking("ferman", 10))
-
-        val result = repository.isNewTopHighScore(UserRanking("ferman", 15))
-
-        then(result).isEqualTo(true)
-    }
-
-    @Test
-    fun `check if not new top high score should be in top user rankings`() {
-        val repository = SyncDynamoDbTopRankingRepository(client)
-        repository.put(UserRanking("ferman", 10))
-
-        val result = repository.isNewTopHighScore(UserRanking("ferman", 5))
-
-        then(result).isEqualTo(false)
     }
 
     private fun givenExistingTopRanking() {

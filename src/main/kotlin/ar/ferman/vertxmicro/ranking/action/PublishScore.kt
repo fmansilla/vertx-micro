@@ -6,7 +6,8 @@ import ar.ferman.vertxmicro.ranking.domain.UserRankingRepository
 
 class PublishScore(
     private val userRankingRepository: UserRankingRepository,
-    private val topRankingRepository: TopRankingRepository
+    private val topRankingRepository: TopRankingRepository,
+    private val maxHighScoresAmount : Int = 10
 ) {
     suspend operator fun invoke(userId: String, score: Int) {
         if (isNewHighScore(userId, score)) {
@@ -21,8 +22,18 @@ class PublishScore(
     }
 
     private suspend fun updateTopUserRankingsIfProper(userRanking: UserRanking) {
-        if (topRankingRepository.isNewTopHighScore(userRanking)) {
-            topRankingRepository.put(userRanking)
+
+        with(topRankingRepository.get()) {
+            if (isNewTopHighScore(userRanking)) {
+                val topUserRankings = (take(maxHighScoresAmount - 1) + userRanking).sortedByDescending { it.score }
+                topRankingRepository.put(topUserRankings)
+            }
+        }
+    }
+
+    private suspend fun isNewTopHighScore(userRanking: UserRanking): Boolean {
+        with(topRankingRepository.get()) {
+            return size < maxHighScoresAmount || any { it.score < userRanking.score }
         }
     }
 }

@@ -24,7 +24,7 @@ class PublishScoreTest {
     fun `first published score is a new high score`() = runBlocking {
         givenCurrentUserHighScore(EMPTY)
         givenTopHighScores()
-        givenPublishScoreAction()
+        givenPublishScoreAction(maxHighScoresAmount = 1)
 
         publishScore(USER_ID, score = 2)
 
@@ -35,7 +35,7 @@ class PublishScoreTest {
     fun `publishing a new score lower than high score is ignored`() = runBlocking {
         givenCurrentUserHighScore(UserRanking(USER_ID, score = 2))
         givenTopHighScores()
-        givenPublishScoreAction()
+        givenPublishScoreAction(maxHighScoresAmount = 1)
 
         publishScore(USER_ID, score = 1)
 
@@ -46,7 +46,7 @@ class PublishScoreTest {
     fun `publishing a new score greater than own high score is saved`() = runBlocking {
         givenCurrentUserHighScore(UserRanking(USER_ID, score = 2))
         givenTopHighScores()
-        givenPublishScoreAction()
+        givenPublishScoreAction(maxHighScoresAmount = 1)
 
         publishScore(USER_ID, score = 10)
 
@@ -58,11 +58,11 @@ class PublishScoreTest {
         runBlocking {
             givenCurrentUserHighScore(EMPTY)
             givenTopHighScores(UserRanking(USER_ID_2, 1), UserRanking(USER_ID_3, 20))
-            givenPublishScoreAction()
+            givenPublishScoreAction(maxHighScoresAmount = 1)
 
             publishScore(USER_ID, 10)
 
-            verify(topRankingRepository).put(eq(UserRanking(USER_ID, 10)))
+            verify(topRankingRepository).put(eq(listOf(UserRanking(USER_ID, 10))))
         }
 
     @Test
@@ -70,25 +70,33 @@ class PublishScoreTest {
         runBlocking {
             givenCurrentUserHighScore(EMPTY)
             givenTopHighScores(UserRanking(USER_ID_2, 10), UserRanking(USER_ID_3, 20))
-            givenPublishScoreAction()
+            givenPublishScoreAction(maxHighScoresAmount = 1)
 
             publishScore(USER_ID, 1)
 
-            verify(topRankingRepository, never()).put(eq(UserRanking(USER_ID, 10)))
+            verify(topRankingRepository, never()).put(any())
+        }
+
+    @Test
+    fun `publishing a new score greater than own high score but lower than all top high scores is saved in top scores when less than max amount`() =
+        runBlocking {
+            givenCurrentUserHighScore(EMPTY)
+            givenTopHighScores(UserRanking(USER_ID_2, 10), UserRanking(USER_ID_3, 20))
+            givenPublishScoreAction(maxHighScoresAmount = 2)
+
+            publishScore(USER_ID, 1)
+
+            verify(topRankingRepository, never()).put(any())
         }
 
     private suspend fun givenTopHighScores(vararg userRankings: UserRanking) {
         topRankingRepository = mock {
             onBlocking { get() } doReturn userRankings.toList()
-            onBlocking { isNewTopHighScore(any()) } doAnswer {
-                val current = ((it.getArgument(0) as UserRanking))
-                userRankings.any { userRanking -> userRanking.score < current.score }
-            }
         }
     }
 
-    private fun givenPublishScoreAction() {
-        publishScore = PublishScore(userRankingRepository, topRankingRepository)
+    private fun givenPublishScoreAction(maxHighScoresAmount: Int) {
+        publishScore = PublishScore(userRankingRepository, topRankingRepository, maxHighScoresAmount)
     }
 
     private suspend fun givenCurrentUserHighScore(highScore: UserRanking?) {

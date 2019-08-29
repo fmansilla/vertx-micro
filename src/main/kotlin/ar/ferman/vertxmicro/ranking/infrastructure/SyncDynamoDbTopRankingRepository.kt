@@ -24,24 +24,20 @@ class SyncDynamoDbTopRankingRepository(private val client: DynamoDbClient) :
         return parseTopUserRankings(json)
     }
 
-    override fun put(topUserRanking: UserRanking) {
-        val topUserRankings = mapper.writeValueAsString(listOf(topUserRanking))
+    override fun put(topUserRankings: List<UserRanking>) {
+        val serializedTopUserRankings = mapper.writeValueAsString(topUserRankings)
 
         client.putItem { putItemBuilder ->
             with(putItemBuilder) {
                 tableName(TopRankingTable.NAME)
                 item(
                     mapOf(
-                        TopRankingTable.HASHKEY to TopRankingTable.UNIQUE_KEY.toAttributeValue(),
-                        TopRankingTable.TOP_USER_RANKING_ATTRIBUTE to topUserRankings.toAttributeValue()
+                        HASHKEY to UNIQUE_KEY.toAttributeValue(),
+                        TOP_USER_RANKING_ATTRIBUTE to serializedTopUserRankings.toAttributeValue()
                     )
                 )
             }
         }
-    }
-
-    override fun isNewTopHighScore(topUserRanking: UserRanking): Boolean {
-        return get().any { it.score < topUserRanking.score }
     }
 
     private fun getTopUserRankingsJson(): String? {

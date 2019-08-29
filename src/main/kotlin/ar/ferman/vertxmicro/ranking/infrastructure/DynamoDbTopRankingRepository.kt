@@ -25,8 +25,8 @@ class DynamoDbTopRankingRepository(private val client: DynamoDbClient) :
         parseTopUserRankings(json)
     }
 
-    override suspend fun put(topUserRanking: UserRanking) = withContext<Unit>(Dispatchers.IO) {
-        val topUserRankings = mapper.writeValueAsString(listOf(topUserRanking))
+    override suspend fun put(topUserRankings: List<UserRanking>) = withContext<Unit>(Dispatchers.IO) {
+        val serializedTopUserRankings = mapper.writeValueAsString(topUserRankings)
 
         client.putItem { putItemBuilder ->
             with(putItemBuilder) {
@@ -34,15 +34,11 @@ class DynamoDbTopRankingRepository(private val client: DynamoDbClient) :
                 item(
                     mapOf(
                         HASHKEY to UNIQUE_KEY.toAttributeValue(),
-                        TOP_USER_RANKING_ATTRIBUTE to topUserRankings.toAttributeValue()
+                        TOP_USER_RANKING_ATTRIBUTE to serializedTopUserRankings.toAttributeValue()
                     )
                 )
             }
         }
-    }
-
-    override suspend fun isNewTopHighScore(topUserRanking: UserRanking): Boolean = withContext(Dispatchers.IO) {
-        get().any { it.score < topUserRanking.score }
     }
 
     private fun getTopUserRankingsJson(): String? {
