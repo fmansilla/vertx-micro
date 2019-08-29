@@ -62,10 +62,10 @@ class DynamoDbUserRankingRepositoryUsingDsl(dynamoDbClient: DynamoDbAsyncClient)
 
     //Consuming HOT/COLD STREAM
 //    @ExperimentalCoroutinesApi //Required Only for hot
-    override suspend fun findAll(): List<UserRanking> = table.scan<UserRanking> {
-        attributes(UserRankingTable.UserId, UserRankingTable.Score)
-        mappingItems(itemMapper::fromItem)
-    }.toList()
+//    override suspend fun findAll(): List<UserRanking> = table.scan<UserRanking> {
+//        attributes(UserRankingTable.UserId, UserRankingTable.Score)
+//        mappingItems(itemMapper::fromItem)
+//    }.toList()
 
     override suspend fun put(userRanking: UserRanking) = table.put(userRanking, itemMapper::toItem)
 

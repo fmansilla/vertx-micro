@@ -31,19 +31,6 @@ class DynamoDbUserRankingRepository(private val dynamoDbClient: DynamoDbAsyncCli
         }
     }
 
-    override suspend fun findAll(): List<UserRanking> = suspendCoroutine { continuation ->
-        dynamoDbClient.scan {
-            it.tableName(UserRankingTable.TableName)
-                .limit(10) }
-            .whenComplete { result, error ->
-                if (error != null) {
-                    continuation.resumeWithException(error)
-                } else {
-                    continuation.resume(result?.items()?.map { it.toUserRanking() } ?: emptyList())
-                }
-            }
-    }
-
     override suspend fun put(userRanking: UserRanking) = suspendCoroutine<Unit> { continuation ->
         dynamoDbClient.putItem {
             it.tableName(UserRankingTable.TableName).item(userRanking.toItem())
